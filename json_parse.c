@@ -156,13 +156,15 @@ struct objMem read_scene(FILE* json) {
       // set the type of object to whatevery next_string returns to value
       object.objArray[object.objNumber-1].type = value;
 
-      // will break if value is not a cameral, sphere, plane
+      // will break if value is not a cameral, sphere, plane, or light
       if (strcmp(value, "camera") == 0) {
         printf("------------CAMERA--------------\n");
       } else if (strcmp(value, "sphere") == 0) {
         printf("------------SPHERE--------------\n");
       } else if (strcmp(value, "plane") == 0) {
         printf("------------PLANE--------------\n");
+      } else if (strcmp(value, "light") == 0) {
+        printf("------------LIGHT--------------\n");
       } else {
         fprintf(stderr, "Error: Unknown type, \"%s\", on line number %d.\n", value, line);
         exit(1);
@@ -184,8 +186,14 @@ struct objMem read_scene(FILE* json) {
           expect_c(json, ':');
           skip_ws(json);
 
-          // check the key with width height or radius
-          if ((strcmp(key, "width") == 0) || (strcmp(key, "height") == 0) || (strcmp(key, "radius") == 0)) {
+          // check the key with width, height, radius, angular, or radial values
+          if ((strcmp(key, "width") == 0) ||
+              (strcmp(key, "height") == 0) ||
+              (strcmp(key, "radius") == 0) ||
+              (strcmp(key, "radial-a0") == 0) ||
+              (strcmp(key, "radial-a1") == 0) ||
+              (strcmp(key, "radial-a2") == 0) ||
+              (strcmp(key, "angular-a0") == 0)) {
             // store the value of camera.width, camera.height, or sphere.radius
             double value = next_number(json);
             // error check the value
@@ -195,43 +203,114 @@ struct objMem read_scene(FILE* json) {
               exit(1);
             } else {
               // store the width in the struct
-              if ((strcmp(key, "width") == 0) && strcmp(object.objArray[object.objNumber-1].type, "camera") == 0) {
+              if ((strcmp(key, "width") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "camera") == 0)) {
                 object.objArray[object.objNumber-1].camera.width = value;
               }
               // store the height in the struct
-              else if ((strcmp(key, "height") == 0) && strcmp(object.objArray[object.objNumber-1].type, "camera") == 0) {
+              else if ((strcmp(key, "height") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "camera") == 0)) {
                 printf("%s - %lf\n", object.objArray[object.objNumber-1].type, value);
                 object.objArray[object.objNumber-1].camera.height = value;
               }
               // store the radius in the struct
-              else if ((strcmp(key, "radius") == 0) && strcmp(object.objArray[object.objNumber-1].type, "sphere") == 0) {
+              else if ((strcmp(key, "radius") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "sphere") == 0)) {
                 printf("%s - %lf\n", object.objArray[object.objNumber-1].type, value);
                 object.objArray[object.objNumber-1].sphere.radius = value;
               }
+              // store the radial-a0 in the struct
+              else if ((strcmp(key, "radial-a0") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "light") == 0)) {
+                printf("%s - %lf\n", object.objArray[object.objNumber-1].type, value);
+                object.objArray[object.objNumber-1].light.radiala0 = value;
+              }
+              // store the radial-a1 in the struct
+              else if ((strcmp(key, "radial-a1") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "light") == 0)) {
+                printf("%s - %lf\n", object.objArray[object.objNumber-1].type, value);
+                object.objArray[object.objNumber-1].light.radiala1 = value;
+              }
+              // store the radial-a2 in the struct
+              else if ((strcmp(key, "radial-a2") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "light") == 0)) {
+                printf("%s - %lf\n", object.objArray[object.objNumber-1].type, value);
+                object.objArray[object.objNumber-1].light.radiala2 = value;
+              }
+              // store the angular-a0 in the struct
+              else if ((strcmp(key, "angular-a0") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "light") == 0)) {
+                printf("%s - %lf\n", object.objArray[object.objNumber-1].type, value);
+                object.objArray[object.objNumber-1].light.angulara0 = value;
+              }
             }
-          } else if ((strcmp(key, "color") == 0) || (strcmp(key, "position") == 0) || (strcmp(key, "normal") == 0)) {
+            // check if color, position, normal, direction, diffuse_color, or specular_color
+          } else if ((strcmp(key, "color") == 0) || (strcmp(key, "position") == 0) || (strcmp(key, "normal") == 0) || (strcmp(key, "direction") == 0) || (strcmp(key, "diffuse_color") == 0) || (strcmp(key, "specular_color") == 0)) {
             double* value = next_vector(json);
-            if ((strcmp(key, "color") == 0) && ((strcmp(object.objArray[object.objNumber-1].type, "sphere") == 0) || (strcmp(object.objArray[object.objNumber-1].type, "plane") == 0))) {
+            // store the color of either a sphere or plane
+            if ((strcmp(key, "color") == 0) && ((strcmp(object.objArray[object.objNumber-1].type, "sphere") == 0) || (strcmp(object.objArray[object.objNumber-1].type, "plane") == 0) || (strcmp(object.objArray[object.objNumber-1].type, "light") == 0))) {
               object.objArray[object.objNumber-1].color[0] = value[0];
               object.objArray[object.objNumber-1].color[1] = value[1];
               object.objArray[object.objNumber-1].color[2] = value[2];
-              printf("Here is the color: %lf, %lf, %lf\n", object.objArray[object.objNumber-1].color[0],
+              printf("Color: [%lf, %lf, %lf]\n", object.objArray[object.objNumber-1].color[0],
                                                            object.objArray[object.objNumber-1].color[1],
                                                            object.objArray[object.objNumber-1].color[2]);
-            } else if ((strcmp(key, "position") == 0) && ((strcmp(object.objArray[object.objNumber-1].type, "sphere") == 0) || (strcmp(object.objArray[object.objNumber-1].type, "plane") == 0))) {
+            }
+            // store the position of the sphere
+            else if ((strcmp(key, "position") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "sphere") == 0)) {
               object.objArray[object.objNumber-1].sphere.position[0] = value[0];
               object.objArray[object.objNumber-1].sphere.position[1] = value[1];
               object.objArray[object.objNumber-1].sphere.position[2] = value[2];
-              printf("Here is the position: %lf, %lf, %lf\n", object.objArray[object.objNumber-1].sphere.position[0],
-                                                              object.objArray[object.objNumber-1].sphere.position[0],
+              printf("Position: [%lf, %lf, %lf]\n", object.objArray[object.objNumber-1].sphere.position[0],
+                                                              object.objArray[object.objNumber-1].sphere.position[1],
                                                               object.objArray[object.objNumber-1].sphere.position[2]);
-            } else if ((strcmp(key, "normal") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "plane") == 0)) {
+            }
+            // store the position of the plane
+            else if ((strcmp(key, "position") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "plane") == 0)) {
+              object.objArray[object.objNumber-1].plane.position[0] = value[0];
+              object.objArray[object.objNumber-1].plane.position[1] = value[1];
+              object.objArray[object.objNumber-1].plane.position[2] = value[2];
+              printf("Position: [%lf, %lf, %lf]\n", object.objArray[object.objNumber-1].plane.position[0],
+                                                              object.objArray[object.objNumber-1].plane.position[1],
+                                                              object.objArray[object.objNumber-1].plane.position[2]);
+            }
+            // store the normal of the plane
+            else if ((strcmp(key, "normal") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "plane") == 0)) {
               object.objArray[object.objNumber-1].plane.normal[0] = value[0];
               object.objArray[object.objNumber-1].plane.normal[1] = value[1];
               object.objArray[object.objNumber-1].plane.normal[2] = value[2];
-              printf("Here is the normal: %lf, %lf, %lf\n", object.objArray[object.objNumber-1].plane.normal[0],
+              printf("Normal: [%lf, %lf, %lf]\n", object.objArray[object.objNumber-1].plane.normal[0],
                                                             object.objArray[object.objNumber-1].plane.normal[1],
                                                             object.objArray[object.objNumber-1].plane.normal[2]);
+            }
+            // store the direction of the light
+            else if ((strcmp(key, "direction") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "light") == 0)) {
+              object.objArray[object.objNumber-1].light.direction[0] = value[0];
+              object.objArray[object.objNumber-1].light.direction[1] = value[1];
+              object.objArray[object.objNumber-1].light.direction[2] = value[2];
+              printf("Direction: [%lf, %lf, %lf]\n", object.objArray[object.objNumber-1].light.direction[0],
+                                                            object.objArray[object.objNumber-1].light.direction[1],
+                                                            object.objArray[object.objNumber-1].light.direction[2]);
+            }
+            // store the diffuse_color of the sphere
+            else if ((strcmp(key, "diffuse_color") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "sphere") == 0)) {
+              object.objArray[object.objNumber-1].sphere.diffuse_color[0] = value[0];
+              object.objArray[object.objNumber-1].sphere.diffuse_color[1] = value[1];
+              object.objArray[object.objNumber-1].sphere.diffuse_color[2] = value[2];
+              printf("Diffuse_color: [%lf, %lf, %lf]\n", object.objArray[object.objNumber-1].sphere.diffuse_color[0],
+                                                            object.objArray[object.objNumber-1].sphere.diffuse_color[1],
+                                                            object.objArray[object.objNumber-1].sphere.diffuse_color[2]);
+            }
+            // store the position of the light
+            else if ((strcmp(key, "position") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "light") == 0)) {
+              object.objArray[object.objNumber-1].light.position[0] = value[0];
+              object.objArray[object.objNumber-1].light.position[1] = value[1];
+              object.objArray[object.objNumber-1].light.position[2] = value[2];
+              printf("Position: [%lf, %lf, %lf]\n", object.objArray[object.objNumber-1].light.position[0],
+                                                              object.objArray[object.objNumber-1].light.position[1],
+                                                              object.objArray[object.objNumber-1].light.position[2]);
+            }
+            // store the specular_color of the sphere
+            else if ((strcmp(key, "specular_color") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "sphere") == 0)) {
+              object.objArray[object.objNumber-1].sphere.specular_color[0] = value[0];
+              object.objArray[object.objNumber-1].sphere.specular_color[1] = value[1];
+              object.objArray[object.objNumber-1].sphere.specular_color[2] = value[2];
+              printf("Specular_color: [%lf, %lf, %lf]\n", object.objArray[object.objNumber-1].sphere.specular_color[0],
+                                                            object.objArray[object.objNumber-1].sphere.specular_color[1],
+                                                            object.objArray[object.objNumber-1].sphere.specular_color[2]);
             }
           } else {
             fprintf(stderr, "Error: Unknown property, \"%s\", on line %d.\n", key, line);
