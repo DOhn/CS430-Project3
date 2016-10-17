@@ -36,21 +36,8 @@ int main(int argc, char *argv[]) {
   // TODO Probably delete some
   int numberOfObjects;
 
-  int cameraType = 0;
   double cameraHeight;
   double cameraWidth;
-
-  int sphereType = 1;
-  double sphereColorX, sphereColorY, sphereColorZ;
-  double spherePositionX;
-  double spherePositionY;
-  double spherePositionZ;
-  double radius;
-
-  int planeType = 2;
-  double planeColorX, planeColorY, planeColorZ;
-  double planePositionX, planePositionY, planePositionZ;
-  double planeNormalX, planeNormalY, planeNormalZ;
 
   // pixel width
   int M = atoi(argv[1]);
@@ -108,8 +95,8 @@ int main(int argc, char *argv[]) {
 
 
   // loop through the pixels
-  for (int y = 0; y < M; y++) {
-    for (int x = 0; x < N; x++) {
+  for (int y = 0; y < N; y++) {
+    for (int x = 0; x < M; x++) {
       double Ro[3] = {0, 0, 0};
 
       double Rd[3] = { object.objArray[i].sphere.position[0] - (cameraWidth/2) + pixwidth * (x + 0.5), object.objArray[i].sphere.position[1] - (cameraHeight/2) + pixheight * (y + 0.5), 1 };
@@ -137,7 +124,7 @@ int main(int argc, char *argv[]) {
       if (best_t > 0 && best_t != INFINITY) {
         if (object.objArray[colorHelper].sphere.position && object.objArray[colorHelper].sphere.radius) {
           shade_pixel(object.objArray[colorHelper].color, y, x, img);
-        } else if (object.objArray[colorHelper].plane.position && object.objArray[colorHelper].plane.normal) {
+        } else if (object.objArray[i].plane.position && object.objArray[i].plane.normal) {
           shade_pixel(object.objArray[colorHelper].color, y, x, img);
         }
       }

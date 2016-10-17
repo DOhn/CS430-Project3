@@ -19,7 +19,7 @@ void shade_pixel(double *color, int row, int col,Image *image) {
     image->color[(int)(row * image->width*4 + col*4)] = (char)(color[0]*255);
     image->color[(int)(row * image->width*4 + col*4+1)] = (char)(color[1]*255);
     image->color[(int)(row * image->width*4 + col*4+2)]= (char)(color[2]*255);
-    image->color[(int)(row * image->width*4 + col*4+3)]= 255;
+    //image->color[(int)(row * image->width*4 + col*4+3)]= 255;
     //printf("shade_pixel finished works\n");
 }
 
@@ -111,60 +111,3 @@ double sphere_intersection(double* Ro, double* Rd, double* C, double r) {
 
   return -1;
 }
-
-/*int main() {
-
-  Object** objects;
-  objects = malloc(sizeof(Object*)*2);
-  objects[0] = malloc(sizeof(Object));
-  objects[0]->type = 0;
-  objects[0]->sphere.radius = 2;
-  // object[0]->teapot.handle_length = 2;
-  objects[0]->sphere.position[0] = 0;
-  objects[0]->sphere.position[1] = 0;
-  objects[0]->sphere.position[2] = 20;
-  objects[1] = NULL;
-
-  double cx = 0;
-  double cy = 0;
-  double h = 0.7;
-  double w = 0.7;
-
-  int M = 20;
-  int N = 20;
-
-  double pixheight = h / M;
-  double pixwidth = w / N;
-  for (int y = 0; y < M; y += 1) {
-    for (int x = 0; x < N; x += 1) {
-      double Ro[3] = {0, 0, 0};
-      // Rd = normalize(P - Ro)
-      double Rd[3] = { cx - (w/2) + pixwidth * (x + 0.5), cy - (h/2) + pixheight * (y + 0.5), 1 };
-      normalize(Rd);
-
-      double best_t = INFINITY;
-      for (int i=0; objects[i] != 0; i += 1) {
-	       double t = 0;
-
-         switch(objects[i]->type) {
-           case 0:
-            t = cylinder_intersection(Ro, Rd, objects[i]->sphere.position, objects[i]->sphere.radius);
-            break;
-          default:
-	        // Horrible error
-	         exit(1);
-	       }
-	      if (t > 0 && t < best_t) best_t = t;
-      }
-      if (best_t > 0 && best_t != INFINITY) {
-	printf("#");
-      } else {
-	       printf(".");
-      }
-
-    }
-    printf("\n");
-  }
-
-  return 0;
-}*/
