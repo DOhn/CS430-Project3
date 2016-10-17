@@ -14,28 +14,23 @@ typedef struct {
     struct {
       double position[3];
       double radius;
-      double diffuse_color[3];
-      double specular_color[3];
+      //double diffuse_color[3];
+      //double specular_color[3];
     } sphere;
     struct {
       double position[3];
       double normal[3];
     } plane;
-    struct {
-      double position[3];
-      double direction[3];
-      double radiala0;
-      double radiala1;
-      double radiala2;
-      double angulara0;
-    } light;
+    //struct {
+      //double position[3];
+      //double direction[3];
+      //double radiala0;
+      //double radiala1;
+      //double radiala2;
+      //double angulara0;
+    //} light;
   };
 } Object;
-
-typedef struct {
-  double origin[3];
-  double direction[3];
-} ray;
 
 void shade_pixel(double *color, int row, int col, Image *image);
 double sqr(double v);

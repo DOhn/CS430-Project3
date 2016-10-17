@@ -10,10 +10,10 @@ void p6Create(Image *img, FILE* input, int magicNumber) {
   printf("magic: %d\n", magicNumber);
   if (magicNumber == 6) {
     printf("inside\n");
-    fprintf(input, "P%d\n%lf %lf\n%d\n", magicNumber, img->width, img->height, 255);
+    fprintf(input, "P%i\n%i %i\n%i\n", magicNumber, (int)(img->width), (int)(img->height), 255);
     for (int i=0; i<size; i++) {
       char c = img->color[i];
-      if (i%4 != 0) {
+      if (i%4 != 3) {
         fwrite(&c, 1, 1, input);
       }
     }

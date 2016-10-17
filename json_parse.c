@@ -217,7 +217,7 @@ struct objMem read_scene(FILE* json) {
                 object.objArray[object.objNumber-1].sphere.radius = value;
               }
               // store the radial-a0 in the struct
-              else if ((strcmp(key, "radial-a0") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "light") == 0)) {
+              /*else if ((strcmp(key, "radial-a0") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "light") == 0)) {
                 printf("%s - %lf\n", object.objArray[object.objNumber-1].type, value);
                 object.objArray[object.objNumber-1].light.radiala0 = value;
               }
@@ -235,7 +235,7 @@ struct objMem read_scene(FILE* json) {
               else if ((strcmp(key, "angular-a0") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "light") == 0)) {
                 printf("%s - %lf\n", object.objArray[object.objNumber-1].type, value);
                 object.objArray[object.objNumber-1].light.angulara0 = value;
-              }
+              }*/
             }
             // check if color, position, normal, direction, diffuse_color, or specular_color
           } else if ((strcmp(key, "color") == 0) || (strcmp(key, "position") == 0) || (strcmp(key, "normal") == 0) || (strcmp(key, "direction") == 0) || (strcmp(key, "diffuse_color") == 0) || (strcmp(key, "specular_color") == 0)) {
@@ -246,8 +246,8 @@ struct objMem read_scene(FILE* json) {
               object.objArray[object.objNumber-1].color[1] = value[1];
               object.objArray[object.objNumber-1].color[2] = value[2];
               printf("Color: [%lf, %lf, %lf]\n", object.objArray[object.objNumber-1].color[0],
-                                                           object.objArray[object.objNumber-1].color[1],
-                                                           object.objArray[object.objNumber-1].color[2]);
+                                                 object.objArray[object.objNumber-1].color[1],
+                                                 object.objArray[object.objNumber-1].color[2]);
             }
             // store the position of the sphere
             else if ((strcmp(key, "position") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "sphere") == 0)) {
@@ -277,7 +277,7 @@ struct objMem read_scene(FILE* json) {
                                                             object.objArray[object.objNumber-1].plane.normal[2]);
             }
             // store the direction of the light
-            else if ((strcmp(key, "direction") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "light") == 0)) {
+            /*else if ((strcmp(key, "direction") == 0) && (strcmp(object.objArray[object.objNumber-1].type, "light") == 0)) {
               object.objArray[object.objNumber-1].light.direction[0] = value[0];
               object.objArray[object.objNumber-1].light.direction[1] = value[1];
               object.objArray[object.objNumber-1].light.direction[2] = value[2];
@@ -311,7 +311,7 @@ struct objMem read_scene(FILE* json) {
               printf("Specular_color: [%lf, %lf, %lf]\n", object.objArray[object.objNumber-1].sphere.specular_color[0],
                                                             object.objArray[object.objNumber-1].sphere.specular_color[1],
                                                             object.objArray[object.objNumber-1].sphere.specular_color[2]);
-            }
+            }*/
           } else {
             fprintf(stderr, "Error: Unknown property, \"%s\", on line %d.\n", key, line);
             exit(1);

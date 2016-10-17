@@ -137,7 +137,7 @@ int main(int argc, char *argv[]) {
       if (best_t > 0 && best_t != INFINITY) {
         if (object.objArray[colorHelper].sphere.position && object.objArray[colorHelper].sphere.radius) {
           shade_pixel(object.objArray[colorHelper].color, y, x, img);
-        } else if (object.objArray[i].plane.position && object.objArray[i].plane.normal) {
+        } else if (object.objArray[colorHelper].plane.position && object.objArray[colorHelper].plane.normal) {
           shade_pixel(object.objArray[colorHelper].color, y, x, img);
         }
       }
