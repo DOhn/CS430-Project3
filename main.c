@@ -95,11 +95,11 @@ int main(int argc, char *argv[]) {
 
 
   // loop through the pixels
-  for (int y = 0; y < N; y++) {
+  for (int y = N; y > 0; y--) {
     for (int x = 0; x < M; x++) {
       double Ro[3] = {0, 0, 0};
 
-      double Rd[3] = { object.objArray[i].sphere.position[0] - (cameraWidth/2) + pixwidth * (x + 0.5), object.objArray[i].sphere.position[1] - (cameraHeight/2) + pixheight * (y + 0.5), 1 };
+      double Rd[3] = { object.objArray[i].sphere.position[0] - (cameraWidth/2) + pixwidth * (x + 0.5), object.objArray[i].sphere.position[1] - (cameraHeight/2) + pixheight * (N - y), 1 };
       normalize(Rd);
 
       int colorHelper = 0;
